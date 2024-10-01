@@ -1,10 +1,5 @@
 # TrollFactory
 
-[![License](https://img.shields.io/github/license/stanislawowski/TrollFactory.svg)](https://github.com/stanislawowski/TrollFactory)
-![GitHub code size in bytes](https://img.shields.io/github/languages/code-size/stanislawowski/TrollFactory)
-![GitHub last commit](https://img.shields.io/github/last-commit/stanislawowski/TrollFactory)
-[![PyPI version](https://badge.fury.io/py/TrollFactory.svg)](https://badge.fury.io/py/TrollFactory)
-
 **An amazingly accurate fake personality generator.**
 
 ## About
@@ -36,15 +31,3 @@ import trollfactory.functions as tf
 tf.generate_personality('polish', 'male')
 ```
 The `generate_personality()` function returns a dict with generated data.
-
-## TODO
--   [x] non-binary gender
--   [ ] finish english_us dataset
--   [ ] tests for english_us dataset
--   [ ] setting static properties
--   [x] cli arguments help
--   [x] add more test scripts
--   [x] improve CC prop & write test
--   [x] type hints for generated props
--   [x] docstrings
--   [ ] split datasets into separate modules
