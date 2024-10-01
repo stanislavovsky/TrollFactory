@@ -1,0 +1,6 @@
+#!/usr/bin/env python3
+from trollfactory import factory
+
+
+if __name__ == '__main__':
+    print(factory.generate_person('pl_PL'))
