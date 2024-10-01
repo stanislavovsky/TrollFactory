@@ -13,16 +13,17 @@ def _is_valid_dataset(dataset):
 
 
 def generate_person(dataset,
-                    static_properties={},  # TODO
-                    exclude_properties=None,  # TODO
-                    only_properties=[]):  # TODO
+                    static_properties={},
+                    exclude_properties=[]):
     if not _is_valid_dataset(dataset):
         raise InvalidDatasetException(f'Invalid dataset: {dataset}. '
             f'Available datasets are: {AVAILABLE_DATASETS}.')
 
-    person = {}
+    person = {**static_properties}
+    used_properties = [i for i in properties.__all__
+                       if i not in exclude_properties]
 
-    for _property in properties.__all__:
+    for _property in used_properties:
         Property = getattr(modules[f'trollfactory.properties.{_property}'],
                            _property.capitalize())
         person[_property] = Property(person).generate()
