@@ -33,9 +33,11 @@ def generate_person(dataset,
 
             for dependency in Property.DEPENDENCIES:
                 if dependency not in properties_list:
-                        raise UnresolvedDependencyException()
+                        raise UnresolvedDependencyException(
+                            f'Dependency {dependency} could not be resolved.')
                 if dependency not in person:
                     dependencies_met = False
+                    break
             
             if dependencies_met:
                 person[_property] = Property(person, dataset).generate()
