@@ -5,7 +5,7 @@ from trollfactory.exceptions import InvalidDatasetException, \
                                     UnresolvedDependencyException
 
 AVAILABLE_DATASETS = ['_'.join([i[0], i[1].upper()])
-                      for i in [i.split('-') for i in datasets.__all__]]
+                      for i in [i.split('_') for i in datasets.__all__]]
 
 
 def _is_valid_dataset(dataset):
@@ -20,7 +20,7 @@ def generate_person(dataset,
             f'Available datasets are: {AVAILABLE_DATASETS}.')
 
     person = {**static_properties}
-    dataset = dataset.replace('_', '-').lower()
+    dataset = dataset.lower()
     properties_list = [i for i in properties.__all__
                        if i not in exclude_properties]
     remaining = properties_list.copy()
