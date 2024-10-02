@@ -1,0 +1,1 @@
+SEX_RATIO = (107, 100)  # 107 females per 100 males

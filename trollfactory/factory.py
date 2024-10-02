@@ -2,7 +2,6 @@
 from trollfactory import datasets, properties
 from trollfactory.properties import *
 from trollfactory.exceptions import InvalidDatasetException
-from sys import modules
 
 AVAILABLE_DATASETS = ['_'.join([i[0], i[1].upper()])
                       for i in [i.split('-') for i in datasets.__all__]]
@@ -20,12 +19,13 @@ def generate_person(dataset,
             f'Available datasets are: {AVAILABLE_DATASETS}.')
 
     person = {**static_properties}
+    dataset = dataset.replace('_', '-').lower()
     used_properties = [i for i in properties.__all__
                        if i not in exclude_properties]
 
     for _property in used_properties:
-        Property = getattr(modules[f'trollfactory.properties.{_property}'],
-                           _property.capitalize())
-        person[_property] = Property(person).generate()
+        Property = getattr(globals()[_property], ''.join(
+            [i.capitalize() for i in _property.split('_')]))
+        person[_property] = Property(person, dataset).generate()
 
     return person

@@ -1,23 +1,28 @@
 from trollfactory.exceptions import InvalidStaticPropertyException
-from random import choice
+from trollfactory.datasets import *
+from random import choices
 
-DATASETS = []
 DEPENDENCIES = {}
 ORDER = ['sex']
+
+def _ds(dataset, keyword, **kwargs):
+    return getattr(globals()[dataset], keyword)
 
 
 def _is_valid_sex(person, **kwargs):
     return True if person['sex']['sex'] in ('female', 'male') else False
 
 
-def _generate_sex(**kwargs):
-    return choice(('female', 'male'))
+def _generate_sex(dataset, **kwargs):
+    return choices(population=('female', 'male'),
+                   weights=_ds(dataset, 'SEX_RATIO'))[0]
 
 
 class Sex:
-    def __init__(self, person):
+    def __init__(self, person, dataset):
         self.person = person
         self.data = {}
+        self.dataset = dataset
 
     def set_static_properties(self):
         if 'sex' in self.person:
@@ -36,6 +41,6 @@ class Sex:
         for _property in ORDER:
             if _property not in self.data:
                 self.data[_property] = globals()[f'_generate_{_property}'](
-                    person=self.person, data=self.data)
+                    person=self.person, data=self.data, dataset=self.dataset)
 
         return self.data
