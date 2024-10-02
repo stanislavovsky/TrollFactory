@@ -1,6 +1,7 @@
 #!/usr/bin/env python3
 from trollfactory import datasets, properties
 from trollfactory.properties import *
+from trollfactory.datasets import *
 from trollfactory.exceptions import InvalidDatasetException, \
                                     UnresolvedDependencyException
 
@@ -17,6 +18,18 @@ def _get_property_class(_property):
                    ''.join([i.capitalize() for i in _property.split('_')]))
 
 
+def _lp(dataset, _property):
+    strings = getattr(globals()[dataset], 'PROPERTIES')
+    return strings[_property] if _property in strings else _property
+
+
+def _lv(dataset, key, value):
+    strings = getattr(globals()[dataset], 'VALUES')
+    if key in strings and value in strings[key]:
+        return strings[key][value]
+    return value
+
+
 class Person():
     def __init__(self,
                  dataset,
@@ -30,7 +43,14 @@ class Person():
         self.dataset = dataset.lower()
         self.properties_list = [i for i in properties.__all__
                                 if i not in exclude_properties]
-    
+
+    def localized(self):
+        return {_lp(self.dataset, _property): {
+            _lp(self.dataset, f'{_property}.{i}'): \
+            _lv(self.dataset, f'{_property}.{i}', self.person[_property][i])
+            for i in self.person[_property]
+        } for _property in self.person}
+
     def generate(self):
         remaining = self.properties_list[:]
 
