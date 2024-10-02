@@ -2,9 +2,6 @@ from trollfactory.exceptions import InvalidStaticPropertyException
 from trollfactory.datasets import *
 from random import randint
 
-DEPENDENCIES = {}
-ORDER = ['birth_month']
-
 
 def _ds(dataset, keyword, **kwargs):
     return getattr(globals()[dataset], keyword)
@@ -21,6 +18,9 @@ def _generate_birth_month(**kwargs):
 
 
 class Birthdate:
+    DEPENDENCIES = []
+    ORDER = ['birth_month']
+
     def __init__(self, person, dataset):
         self.person = person
         self.dataset = dataset
@@ -28,7 +28,7 @@ class Birthdate:
 
     def set_static_properties(self):
         if 'birthdate' in self.person:
-            for _property in ORDER:
+            for _property in self.ORDER:
                 if globals()[f'_is_valid_{_property}'](
                     person=self.person, data=self.data):
                     self.data[_property] = self.person['birthdate'][_property]
@@ -40,7 +40,7 @@ class Birthdate:
     def generate(self):
         self.set_static_properties()
 
-        for _property in ORDER:
+        for _property in self.ORDER:
             if _property not in self.data:
                 self.data[_property] = globals()[f'_generate_{_property}'](
                     person=self.person, data=self.data, dataset=self.dataset)

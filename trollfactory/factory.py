@@ -1,7 +1,8 @@
 #!/usr/bin/env python3
 from trollfactory import datasets, properties
 from trollfactory.properties import *
-from trollfactory.exceptions import InvalidDatasetException
+from trollfactory.exceptions import InvalidDatasetException, \
+                                    UnresolvedDependencyException
 
 AVAILABLE_DATASETS = ['_'.join([i[0], i[1].upper()])
                       for i in [i.split('-') for i in datasets.__all__]]
@@ -20,12 +21,24 @@ def generate_person(dataset,
 
     person = {**static_properties}
     dataset = dataset.replace('_', '-').lower()
-    used_properties = [i for i in properties.__all__
+    properties_list = [i for i in properties.__all__
                        if i not in exclude_properties]
+    remaining = properties_list.copy()
 
-    for _property in used_properties:
-        Property = getattr(globals()[_property], ''.join(
-            [i.capitalize() for i in _property.split('_')]))
-        person[_property] = Property(person, dataset).generate()
+    while len(remaining) > 0:
+        for _property in remaining:
+            Property = getattr(globals()[_property], ''.join(
+                [i.capitalize() for i in _property.split('_')]))
+            dependencies_met = True
+
+            for dependency in Property.DEPENDENCIES:
+                if dependency not in properties_list:
+                        raise UnresolvedDependencyException()
+                if dependency not in person:
+                    dependencies_met = False
+            
+            if dependencies_met:
+                person[_property] = Property(person, dataset).generate()
+                remaining.remove(_property)
 
     return person
