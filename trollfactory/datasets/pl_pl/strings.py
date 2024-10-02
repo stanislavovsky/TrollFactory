@@ -8,6 +8,9 @@ PROPERTIES = {
     'birthdate.age': 'wiek',
     'blood_type': 'grupa krwi',
     'blood_type.blood_type': 'grupa krwi',
+    'name': 'imię i nazwisko',
+    'name.first_name': 'imię',
+    'name.surname': 'nazwisko',
 }
 
 VALUES = {
