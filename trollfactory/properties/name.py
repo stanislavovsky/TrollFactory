@@ -28,11 +28,21 @@ def _is_valid_first_name(person, **kwargs):
 
 
 def _generate_first_name(dataset, person, **kwargs):
-    if person['sex']['sex'] == 'male':
-        return choices(population=_ds(dataset, 'MASCULINE_NAMES'),
-                       weights=_ds(dataset, 'MASCULINE_NAMES_WEIGHTS'))[0]
-    return choices(population=_ds(dataset, 'FEMININE_NAMES'),
-                   weights=_ds(dataset, 'FEMININE_NAMES_WEIGHTS'))[0]
+    year = person['birthdate']['birth_year']
+    sex = person['sex']['sex']
+    names = _ds(dataset, 'MASCULINE_NAMES' if sex == 'male'
+                                           else 'FEMININE_NAMES')
+
+    if str(year) in names.keys():
+        _year = str(year)
+    elif year < int(sorted(names.keys())[0]):
+        _year = sorted(names.keys())[0]
+    else:
+        _year = sorted(names.keys())[-1]
+
+
+    return choices(population=names[_year]['names'],
+                   weights=names[_year]['weights'])[0]
 
 
 def _is_valid_surname(dataset, person, **kwargs):
@@ -73,7 +83,7 @@ class NameType(TypedDict):
 
 
 class Name:
-    DEPENDENCIES: List[str] = ['sex']
+    DEPENDENCIES: List[str] = ['sex', 'birthdate']
     ORDER = ['first_name', 'surname']
 
     def __init__(self, person, dataset):
