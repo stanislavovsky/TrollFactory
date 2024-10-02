@@ -1,23 +1,8 @@
-AGE_GROUPS = {
-    (0, 4): 0.504,
-    (5, 9): 0.503,
-    (10, 14): 0.541,
-    (15, 19): 0.470,
-    (20, 24): 0.517,
-    (25, 29): 0.634,
-    (30, 34): 0.737,
-    (35, 39): 0.829,
-    (40, 44): 0.792,
-    (45, 49): 0.699,
-    (50, 54): 0.594,
-    (55, 59): 0.606,
-    (60, 64): 0.701,
-    (65, 69): 0.658,
-    (70, 74): 0.504,
-    (75, 79): 0.267,
-    (80, 84): 0.228,
-    (85, 89): 0.142,
-    (90, 94): 0.058,
-    (95, 99): 0.013,
-    (100, 105): 0.002,  # ages 105+ are extremely rare
-}  # source: 2021 UNSD
+from json import loads
+from pkgutil import get_data
+
+_data = loads(get_data(__package__, 'assets/age_groups.json'))
+
+AGE_GROUPS = _data['age_groups']
+FEMALE_AGES_WEIGHTS = _data['female_weights']
+MALE_AGES_WEIGHTS = _data['male_weights']

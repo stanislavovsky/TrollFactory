@@ -57,8 +57,12 @@ def _generate_birth_year(dataset, person, **kwargs):
             return now.year-age
 
     age_groups = _ds(dataset, 'AGE_GROUPS')
-    return now.year - randint(*choices(population=list(age_groups.keys()),
-                                       weights=age_groups.values())[0])
+    weights = (_ds(dataset, 'FEMALE_AGES_WEIGHTS')
+               if person['sex']['sex'] == 'female'
+               else _ds(dataset, 'MALE_AGES_WEIGHTS'))
+
+    return now.year - randint(*choices(population=age_groups,
+                                       weights=weights)[0])
 
 
 def _is_valid_birth_month(person, data, **kwargs):
@@ -127,7 +131,7 @@ class BirthdateType(TypedDict):
 
 
 class Birthdate:
-    DEPENDENCIES: List[str] = []
+    DEPENDENCIES: List[str] = ['sex']
     ORDER = ['birth_year', 'birth_month', 'birth_day', 'age']
 
     def __init__(self, person, dataset):
