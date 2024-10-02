@@ -20,11 +20,18 @@ def _get_property_class(_property):
 
 def _lp(dataset, _property):
     strings = getattr(globals()[dataset], 'PROPERTIES')
-    return strings[_property] if _property in strings else _property
+
+    if _property in strings:
+        return strings[_property]
+    return _property.split('.')[-1]
 
 
 def _lv(dataset, key, value):
+    if type(value) != str:
+        return value
+
     strings = getattr(globals()[dataset], 'VALUES')
+
     if key in strings and value in strings[key]:
         return strings[key][value]
     return value
