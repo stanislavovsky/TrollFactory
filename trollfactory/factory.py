@@ -12,35 +12,42 @@ def _is_valid_dataset(dataset):
     return True if dataset in AVAILABLE_DATASETS else False
 
 
-def generate_person(dataset,
-                    static_properties={},
-                    exclude_properties=[]):
-    if not _is_valid_dataset(dataset):
-        raise InvalidDatasetException(f'Invalid dataset: {dataset}. '
-            f'Available datasets are: {AVAILABLE_DATASETS}.')
+def _get_property_class(_property):
+    return getattr(globals()[_property],
+                   ''.join([i.capitalize() for i in _property.split('_')]))
 
-    person = {**static_properties}
-    dataset = dataset.lower()
-    properties_list = [i for i in properties.__all__
-                       if i not in exclude_properties]
-    remaining = properties_list.copy()
 
-    while len(remaining) > 0:
-        for _property in remaining:
-            Property = getattr(globals()[_property], ''.join(
-                [i.capitalize() for i in _property.split('_')]))
-            dependencies_met = True
+class Person():
+    def __init__(self,
+                 dataset,
+                 static_properties={},
+                 exclude_properties=[]):
+        if not _is_valid_dataset(dataset):
+            raise InvalidDatasetException(f'Invalid dataset: {dataset}. '
+                f'Available datasets are: {AVAILABLE_DATASETS}.')
 
-            for dependency in Property.DEPENDENCIES:
-                if dependency not in properties_list:
-                        raise UnresolvedDependencyException(
-                            f'Dependency {dependency} could not be resolved.')
-                if dependency not in person:
-                    dependencies_met = False
-                    break
-            
-            if dependencies_met:
-                person[_property] = Property(person, dataset).generate()
-                remaining.remove(_property)
+        self.person = {**static_properties}
+        self.dataset = dataset.lower()
+        self.properties_list = [i for i in properties.__all__
+                                if i not in exclude_properties]
+    
+    def generate(self):
+        remaining = self.properties_list[:]
 
-    return person
+        while len(remaining) > 0:
+            for _property in remaining:
+                Property = _get_property_class(_property)
+                dependencies_met = True
+
+                for dependency in Property.DEPENDENCIES:
+                    if dependency not in self.properties_list:
+                            raise UnresolvedDependencyException(
+                                f'Dependency {dependency} could not be resolved.')
+                    if dependency not in self.person:
+                        dependencies_met = False
+                        break
+                
+                if dependencies_met:
+                    self.person[_property] = Property(self.person,
+                                                      self.dataset).generate()
+                    remaining.remove(_property)

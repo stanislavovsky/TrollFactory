@@ -3,4 +3,10 @@ from trollfactory import factory
 
 
 if __name__ == '__main__':
-    print(factory.generate_person('pl_PL'))
+    person = factory.Person('pl_PL', static_properties={
+        'sex': {'sex': 'male'},
+        'birthdate': {'birth_day': 10, 'age': 25, 'birth_month': 10},
+    })
+    person.generate()
+
+    print(person.person)

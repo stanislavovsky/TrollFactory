@@ -16,5 +16,6 @@ And use the library in your Python 3 shell/projects:
 
 ```python
 from trollfactory import factory
-factory.generate_person('pl_PL', static_properties={'sex': {'sex': 'female'}})
+person = factory.Person('pl_PL', static_properties={'sex': {'sex': 'female'}})
+person.generate()
 ```
