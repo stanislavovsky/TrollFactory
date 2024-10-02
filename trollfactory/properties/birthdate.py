@@ -3,6 +3,7 @@ from trollfactory.datasets import *
 from random import randint, choices
 from calendar import monthrange
 from datetime import date
+from typing import List, TypedDict
 
 
 def _ds(dataset, keyword, **kwargs):
@@ -118,8 +119,15 @@ def _generate_age(data, **kwargs):
         (today.month, today.day) < (data['birth_month'], data['birth_day']))
 
 
+class BirthdateType(TypedDict):
+    birth_year: int
+    birth_month: int
+    birth_day: int
+    age: int
+
+
 class Birthdate:
-    DEPENDENCIES = []
+    DEPENDENCIES: List[str] = []
     ORDER = ['birth_year', 'birth_month', 'birth_day', 'age']
 
     def __init__(self, person, dataset):
@@ -127,7 +135,7 @@ class Birthdate:
         self.dataset = dataset
         self.data = {}
 
-    def generate(self):
+    def generate(self) -> BirthdateType:
         for _property in self.ORDER:
             if _property in self.person['birthdate']:
                 if globals()[f'_is_valid_{_property}'](person=self.person,

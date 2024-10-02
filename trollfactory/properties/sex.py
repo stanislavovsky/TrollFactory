@@ -1,6 +1,7 @@
 from trollfactory.exceptions import InvalidStaticPropertyException
 from trollfactory.datasets import *
 from random import choices
+from typing import List, TypedDict
 
 
 def _ds(dataset, keyword, **kwargs):
@@ -16,8 +17,12 @@ def _generate_sex(dataset, **kwargs):
                    weights=_ds(dataset, 'SEX_RATIO'))[0]
 
 
+class SexType(TypedDict):
+    sex: str
+
+
 class Sex:
-    DEPENDENCIES = []
+    DEPENDENCIES: List[str] = []
     ORDER = ['sex']
 
     def __init__(self, person, dataset):
@@ -25,7 +30,7 @@ class Sex:
         self.data = {}
         self.dataset = dataset
 
-    def generate(self):
+    def generate(self) -> SexType:
         for _property in self.ORDER:
             if _property in self.person['sex']:
                 if globals()[f'_is_valid_{_property}'](person=self.person,
