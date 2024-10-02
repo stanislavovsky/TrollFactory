@@ -8,11 +8,27 @@ def _ds(dataset, keyword, **kwargs):
     return getattr(globals()[dataset], keyword)
 
 
+def _gender_from_surname(dataset, surname):
+    suffixes = _ds(dataset, 'SURNAME_SUFFIXES')
+
+    for suffix in suffixes:
+        if surname.endswith(suffix):
+            return suffixes[suffix][0]
+
+    return None
+
+
 def _is_valid_sex(person, **kwargs):
     return True if person['sex']['sex'] in ('female', 'male') else False
 
 
-def _generate_sex(dataset, **kwargs):
+def _generate_sex(dataset, person, **kwargs):
+    # adjust sex for grammatical gender if gendered surname is set
+    if 'name' in person and 'surname' in person['name']:
+        gg = _gender_from_surname(dataset, person['name']['surname'])
+        if gg:
+            return gg
+
     return choices(population=('female', 'male'),
                    weights=_ds(dataset, 'SEX_RATIO'))[0]
 
