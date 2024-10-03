@@ -2,9 +2,12 @@ from json import loads
 from pkgutil import get_data
 
 _names = loads(get_data(__package__, 'assets/names.json'))
-SURNAMES = loads(get_data(__package__, 'assets/surnames.json'))
+_surnames = loads(get_data(__package__, 'assets/surnames.json'))
+
 MASCULINE_NAMES = _names['masculine']
 FEMININE_NAMES = _names['feminine']
+MASCULINE_SURNAMES = _surnames['masculine']
+FEMININE_SURNAMES = _surnames['feminine']
 
 SURNAME_SUFFIXES = {
     'ski': ('male', 'ska'),  # replace 'ski' with 'ska' in women's surnames

@@ -29,9 +29,8 @@ def _is_valid_first_name(person, **kwargs):
 
 def _generate_first_name(dataset, person, **kwargs):
     year = person['birthdate']['birth_year']
-    sex = person['sex']['sex']
-    names = _ds(dataset, 'MASCULINE_NAMES' if sex == 'male'
-                                           else 'FEMININE_NAMES')
+    names = _ds(dataset, 'MASCULINE_NAMES'
+                if person['sex']['sex'] == 'male' else 'FEMININE_NAMES')
 
     if str(year) in names.keys():
         _year = str(year)
@@ -64,17 +63,12 @@ def _is_valid_surname(dataset, person, **kwargs):
 
 
 def _generate_surname(dataset, person, **kwargs):
-    surname = choice(_ds(dataset, 'SURNAMES'))
+    surnames = _ds(dataset, 'MASCULINE_SURNAMES'
+                   if person['sex']['sex'] == 'male' else 'FEMININE_SURNAMES')
+    voivodeship = choice(list(surnames.keys()))  # TODO: use actual voivodeships
 
-    # adjust surname for grammatical gender
-    suffixes = _ds(dataset, 'SURNAME_SUFFIXES')
-    for suffix in suffixes:
-        if surname.endswith(suffix):
-            if person['sex']['sex'] != suffixes[suffix][0]:
-                surname = surname[:-len(suffix)] + suffixes[suffix][1]
-            break
-
-    return surname
+    return choices(population=surnames[voivodeship]['surnames'],
+                   weights=surnames[voivodeship]['weights'])[0]
 
 
 class NameType(TypedDict):
