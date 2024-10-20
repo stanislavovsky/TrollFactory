@@ -1,4 +1,6 @@
-# TrollFactory
+<p align="center">
+  <img width="550" src="logo.png" alt="TrollFactory"/>
+</p>
 
 *Rewrite coming soon, stay tuned!*
 
