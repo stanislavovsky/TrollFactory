@@ -37,6 +37,17 @@ def _lv(dataset, key, value):
     return value
 
 
+def list_available_datasets():
+    return [{
+        'dataset': f'{dataset.split("_")[0]}_{dataset.split("_")[1].upper()}',
+        'module_name': dataset,
+        'language': getattr(globals()[dataset], 'LANGUAGE'),
+        'country_full': getattr(globals()[dataset], 'COUNTRY_FULL'),
+        'country_shorthand': getattr(globals()[dataset], 'COUNTRY_SHORTHAND'),
+        'emoji': getattr(globals()[dataset], 'EMOJI'),
+    } for dataset in datasets.__all__]
+
+
 class Person():
     def __init__(self,
                  dataset,
