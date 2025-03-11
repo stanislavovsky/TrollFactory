@@ -1,1 +1,1 @@
-schwifty==2021.10.2
+schwifty==2025.1.0
